@@ -6,8 +6,6 @@ android {
     namespace = 'com.example.otpforwarder'
     compileSdk = 34
 
-    // Remove the problematic configuration resolution code entirely
-
     defaultConfig {
         applicationId = "com.example.otpforwarder"
         minSdk = 24
@@ -15,7 +13,6 @@ android {
         versionCode = 1
         versionName = "1.0"
         
-        // Add support for vector drawables
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -25,7 +22,6 @@ android {
         release {
             minifyEnabled = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            // Using a safer approach for the signing config
             signingConfig = signingConfigs.debug
         }
         debug {
@@ -34,7 +30,6 @@ android {
         }
     }
 
-    // Revert to Java 8 which is compatible with Android SDK
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -46,16 +41,21 @@ android {
             java.srcDirs = ['src/main/java']
             res.srcDirs = ['src/main/res']
         }
-        // Removed test source sets
+        
+        test {
+            java.srcDirs = ['src/test/java']
+        }
+        
+        androidTest {
+            java.srcDirs = ['src/androidTest/java']
+        }
     }
 
-    // Avoid lint errors for missing translations
     lint {
         abortOnError = false
         disable 'MissingTranslation', 'ExtraTranslation'
     }
     
-    // Add this packaging options block to resolve JavaMail dependency conflicts
     packaging {
         resources {
             excludes += [
@@ -74,29 +74,59 @@ android {
     }
 
     testOptions {
-        unitTests.all {
-            // Enable the display of standard output and error streams during tests
-            testLogging {
-                showStandardStreams true
-                events "passed", "skipped", "failed"
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+            
+            all {
+                testLogging {
+                    events = ["passed", "skipped", "failed", "standardOut", "standardError"]
+                    showExceptions = true
+                    showCauses = true
+                    showStackTraces = true
+                    exceptionFormat = "full"
+                    showStandardStreams = true
+                }
+                
+                // Add HTML reports configuration
+                reports {
+                    html.required = true
+                    junitXml.required = true
+                }
             }
         }
     }
 }
 
 dependencies {
-    // Define fixed versions for dependencies to avoid inconsistencies
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     
-    // JavaMail API (for sending emails)
     implementation 'com.sun.mail:android-mail:1.6.7'
     implementation 'com.sun.mail:android-activation:1.6.7'
     
-
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    testImplementation 'org.mockito:mockito-core:4.5.1'
+    
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+    androidTestImplementation 'androidx.test:rules:1.5.0'
+}
+
+task printTestSourceDirs {
+    doLast {
+        println "Test source dirs: ${android.sourceSets.test.java.srcDirs}"
+        println "AndroidTest source dirs: ${android.sourceSets.androidTest.java.srcDirs}"
+    }
+}
+
+// Add a task to print the test report locations
+task printTestReportLocations {
+    doLast {
+        println "Unit Test Reports: ${project.buildDir}/reports/tests/testDebugUnitTest/"
+        println "Instrumented Test Reports: ${project.buildDir}/reports/androidTests/connected/"
+    }
 }
