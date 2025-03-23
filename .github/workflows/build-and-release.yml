@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,8 +16,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
-          java-version: '17' # Updated from '11' to '17' to match your project
+          distribution: 'adopt'
+          java-version: '17'
           cache: gradle
 
       - name: Setup Android SDK
