@@ -14,3 +14,18 @@ buildscript {
 tasks.register('clean', Delete) {
     delete layout.buildDirectory
 }
+
+// Add Java version compatibility
+allprojects {
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
+afterEvaluate {
+    // Ensure configurations are not modified post–resolution.
+    configurations.all {
+        // Do not mutate the dependencies here
+    }
+}
