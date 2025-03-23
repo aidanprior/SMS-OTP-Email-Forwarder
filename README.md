@@ -43,7 +43,7 @@ SMS OTP Email Forwarder is an Android application that automatically forwards SM
 
 ## Support
 
-For issues, feature requests, or questions, please open an issue in our [GitHub Issues tracker](https://github.com/yourusername/Android_OTP_SMS_to_email/issues).
+For issues, feature requests, or questions, please open an issue in our [GitHub Issues tracker](https://github.com/aidanprior/Android_OTP_SMS_to_email/issues).
 
 ## License
 
