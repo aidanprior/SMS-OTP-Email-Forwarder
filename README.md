@@ -21,7 +21,7 @@ SMS OTP Email Forwarder is an Android application that automatically forwards SM
 
 ## Installation
 
-1. Download the APK directly from [here](https://github.com/yourusername/Android_OTP_SMS_to_email/releases/latest/download/sms-otp-email-forwarder.apk)
+1. Download the APK directly from [here](https://github.com/aidanprior/SMS-OTP-Email-Forwarder/releases/latest/download/sms-otp-email-forwarder.apk)
 2. Enable installation from unknown sources in your device settings
 3. Install the application
 4. Grant the required permissions when prompted
