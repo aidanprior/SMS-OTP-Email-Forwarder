@@ -27,7 +27,10 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Release APK
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleProdRelease
+
+      - name: List output files
+        run: find app/build/outputs -type f -name "*.apk" | sort
 
       - name: Create Release
         id: create_release
@@ -37,6 +40,6 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            app/build/outputs/apk/release/*.apk
+            app/build/outputs/apk/prod/release/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
