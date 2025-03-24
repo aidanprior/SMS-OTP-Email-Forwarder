@@ -21,11 +21,33 @@ allprojects {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+    
+
 }
 
-afterEvaluate {
-    // Ensure configurations are not modified post–resolution.
-    configurations.all {
-        // Do not mutate the dependencies here
+// Create a task to check build dependencies and report status
+tasks.register('checkBuildEnvironment') {
+    doLast {
+        println "==========================================="
+        println "Build Environment Information"
+        println "==========================================="
+        println "Java Version: ${System.getProperty('java.version')}"
+        println "Gradle Version: ${gradle.gradleVersion}"
+        println "Android Gradle Plugin: 8.2.0"
+        println "compileSdk: 34"
+        println "minSdk: 21"
+        println "targetSdk: 34"
+        println "==========================================="
+    }
+}
+
+tasks.register('buildDebugAndRelease') {
+    dependsOn ':app:assembleDebug', ':app:assembleRelease'
+    doLast {
+        println "==========================================="
+        println "Build completed successfully!"
+        println "Debug and Release APKs are available in:"
+        println "${rootProject.projectDir}/app/build/outputs/apk/"
+        println "==========================================="
     }
 }

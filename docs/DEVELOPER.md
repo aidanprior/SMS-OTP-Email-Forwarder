@@ -1,14 +1,22 @@
 # Developer Documentation - SMS OTP Email Forwarder
 
+## Current Implementation Status
+
+This application is currently in early development stage with basic functionality implemented:
+
+1. **SMS Receiver**: Basic SMS message reception
+2. **Simple Email Forwarding**: Basic implementation with JavaMail
+3. **UI Layer**: Minimal UI for configuration
+4. **Settings Storage**: Basic SharedPreferences implementation
+
 ## Architecture Overview
 
-The SMS OTP Email Forwarder app follows a modular architecture with these main components:
+The SMS OTP Email Forwarder app follows a simple architecture with these components:
 
-1. **SMS Receiver**: Intercepts incoming SMS messages and processes them to detect OTPs.
-2. **OTP Parser**: Extracts OTP codes from message content using pattern recognition.
-3. **Email Service**: Handles the forwarding of detected OTPs to the configured email address.
-4. **UI Layer**: Provides user interface for configuration and status monitoring.
-5. **Preference Manager**: Handles storage and retrieval of user settings.
+1. **SMS Receiver**: Intercepts incoming SMS messages.
+2. **Email Service**: Handles the forwarding of messages to the configured email address.
+3. **UI Layer**: Provides a basic user interface for configuration.
+4. **Preference Manager**: Handles storage and retrieval of user settings.
 
 ## Key Components
 
@@ -18,34 +26,27 @@ The manifest declares necessary permissions (RECEIVE_SMS, INTERNET) and register
 
 ### SMS Receiver
 
-The app uses a `BroadcastReceiver` to detect incoming SMS messages, which triggers the OTP detection logic.
+The app uses a `BroadcastReceiver` to detect incoming SMS messages.
 
 ```java
 public class SMSReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // Extract SMS message
-        // Process for OTP
-        // Forward if detected
+        // Forward via email
     }
 }
 ```
 
-### OTP Detection Logic
-
-The app employs regular expressions and keyword matching to identify OTP patterns within SMS messages.
-
 ### Email Service
 
-Implements JavaMail or similar libraries to send emails through SMTP with the extracted OTP.
+Basic implementation using JavaMail API to send emails through SMTP.
 
-### Data Flow
+### Current Data Flow
 
 1. SMS received → BroadcastReceiver triggered
-2. Message parsed for OTP → Detection algorithms applied
-3. If OTP found → Email service prepares message
-4. Email credentials retrieved from secure storage
-5. Email sent to configured address
+2. Message forwarded to configured email address
+3. No advanced OTP detection logic implemented yet
 
 ## Building the Project
 
@@ -62,13 +63,38 @@ Implements JavaMail or similar libraries to send emails through SMTP with the ex
 3. Sync Gradle dependencies
 4. Build using Gradle wrapper: `./gradlew assembleDebug`
 
+### Build Variants
+
+The app supports different build types:
+
+1. **Debug Build**:
+
+   - Package name suffix: `.debug`
+   - Verbose logging enabled
+   - No code optimization
+   - Useful for development and testing
+
+2. **Release Build**:
+   - Full package name
+   - Optimized with R8
+   - Code minification and resource shrinking enabled
+   - Reduced logging
+   - ProGuard rules applied to maintain functionality with third-party libraries
+
+To build both variants:
+
+```bash
+./gradlew buildDebugAndRelease
+```
+
+This will generate APKs in the project's `app/build/outputs/apk/` directory.
+
 ### Dependency Management
 
 Key dependencies include:
 
 - JavaMail API for email functionality
 - AndroidX components for UI and background processing
-- Room database (optional) for message history
 
 ## Project Structure
 
@@ -78,53 +104,36 @@ app/
 │   ├── main/
 │   │   ├── java/
 │   │   │   └── com/example/otpforwarder/
-│   │   │       ├── activities/       # UI Activities
-│   │   │       ├── receivers/        # BroadcastReceivers
-│   │   │       ├── services/         # Background Services
-│   │   │       ├── utils/            # Helper Classes
-│   │   │       └── models/           # Data Models
-│   │   ├── res/                      # Resources
-│   │   └── AndroidManifest.xml       # App Manifest
-│   └── test/                         # Unit Tests
-└── build.gradle                      # App-level build file
+│   │   │       ├── OTPForwarderApp.java    # Main application class
+│   │   │       └── SMSReceiver.java        # SMS broadcast receiver
+│   │   ├── res/                            # Resources
+│   │   └── AndroidManifest.xml             # App Manifest
+│   └── test/                               # Unit Tests
+└── build.gradle                            # App-level build file
 ```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Implement changes with appropriate tests
-4. Submit a pull request with detailed description
 
 ## Testing
 
+Basic testing infrastructure is in place:
+
 - Unit tests: `./gradlew test`
 - Instrumented tests: `./gradlew connectedAndroidTest`
-- Manual testing should verify:
-  - SMS reception in various formats
-  - OTP detection accuracy
-  - Email delivery reliability
-  - Battery consumption
-
-## Security Considerations
-
-- Use Android Keystore for credential encryption
-- Implement proper input validation
-- Consider obfuscation with ProGuard/R8
-- Handle email password with secure methods
-- Test for potential data leakage
 
 ## Known Issues and Limitations
 
-- SMS receiving limitations on newer Android versions
-- Background processing restrictions on Android 8+
-- Possible email delivery delays due to network conditions
-- Battery optimization may interfere with service reliability
+- No advanced OTP detection algorithms implemented yet
+- Limited error handling
+- No background service reliability improvements
+- No persistent message storage
+- Basic UI only
+- Limited configuration options
 
-## Future Improvements
+## Planned Improvements
 
-- Cloud backup for settings
-- Multiple email recipient support
-- Advanced OTP detection algorithms
-- Integration with password managers
-- Support for OTPs received via other channels (e.g., WhatsApp)
+- Implement proper OTP detection algorithms
+- Improve UI with material design
+- Add background service reliability
+- Implement proper error handling and notifications
+- Add advanced filtering options
+- Add backup/restore functionality
+- Support for multiple email configurations

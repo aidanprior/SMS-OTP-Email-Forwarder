@@ -8,31 +8,71 @@ android {
 
     defaultConfig {
         applicationId = "com.example.otpforwarder"
-        minSdk = 24
+        minSdk = 21
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
         
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        
+        // Add proper multi-dex support
+        multiDexEnabled = true
     }
 
     buildTypes {
-        release {
-            minifyEnabled = true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig = signingConfigs.debug
-        }
         debug {
-            applicationIdSuffix = ".debug"
-            debuggable = true
+            applicationIdSuffix ".debug"
+            debuggable true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            
+            // Add debug-specific build config fields
+            buildConfigField "boolean", "ENABLE_LOGGING", "true"
+        }
+        
+        release {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            
+            // Disable logging in release builds
+            buildConfigField "boolean", "ENABLE_LOGGING", "false"
+            
+            // Signing configuration will be set in a separate file that's not checked into version control
+            // signingConfig signingConfigs.release
+        }
+        
+        // Renamed from "dev" to "development" to avoid name collision with product flavor
+        development {
+            debuggable true
+            minifyEnabled false
+            buildConfigField "boolean", "ENABLE_LOGGING", "true"
         }
     }
-
+    
+    // Optional signing config setup - implement when ready to publish
+    /*
+    signingConfigs {
+        release {
+            // These would be stored in local.properties or set as environment variables
+            storeFile file(RELEASE_STORE_FILE)
+            storePassword RELEASE_STORE_PASSWORD
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_KEY_PASSWORD
+        }
+    }
+    */
+    
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     sourceSets {
@@ -96,6 +136,41 @@ android {
             }
         }
     }
+
+    // Enable parallel builds
+    flavorDimensions += ["environment"]
+    
+    // Creates different product flavors to test functionality
+    productFlavors {
+        // Renamed flavor from "dev" to "develop" to avoid collision with build type
+        develop {
+            dimension "environment"
+            // Development-specific configurations
+        }
+        
+        prod {
+            dimension "environment"
+            // Production-specific configurations
+        }
+    }
+    
+    // Optimize build performance
+    packagingOptions {
+        resources {
+            excludes += [
+                '**/LICENSE.txt',
+                'META-INF/DEPENDENCIES',
+                'META-INF/ASL2.0',
+                'META-INF/NOTICE',
+                'META-INF/LICENSE'
+            ]
+        }
+    }
+    
+    // Gradle build caching for faster builds
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
 }
 
 dependencies {
@@ -103,17 +178,22 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.cardview:cardview:1.0.0'
     
+    // JavaMail API for email functionality
     implementation 'com.sun.mail:android-mail:1.6.7'
     implementation 'com.sun.mail:android-activation:1.6.7'
     
+    // Testing dependencies
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:4.5.1'
-    
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation 'androidx.test:runner:1.5.2'
     androidTestImplementation 'androidx.test:rules:1.5.0'
+    
+    // MultDex support for older Android versions
+    implementation 'androidx.multidex:multidex:2.0.1'
 }
 
 task printTestSourceDirs {
@@ -128,5 +208,27 @@ task printTestReportLocations {
     doLast {
         println "Unit Test Reports: ${project.buildDir}/reports/tests/testDebugUnitTest/"
         println "Instrumented Test Reports: ${project.buildDir}/reports/androidTests/connected/"
+    }
+}
+
+// Add this task to generate Javadoc for the project
+tasks.register('generateJavadoc', Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    options.memberLevel = JavadocMemberLevel.PROTECTED
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
+}
+
+// Create a task to copy APKs to a specific directory for easy access
+tasks.register('copyApks', Copy) {
+    dependsOn 'assembleDebug', 'assembleRelease'
+    from("$buildDir/outputs/apk/") {
+        include '**/*.apk'
+    }
+    into "$rootDir/apks"
+    doLast {
+        println "APKs copied to: $rootDir/apks"
     }
 }

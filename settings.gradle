@@ -14,5 +14,14 @@ dependencyResolutionManagement {
     }
 }
 
+// Enable build cache
+buildCache {
+    local {
+        enabled = true
+        directory = new File(rootDir, 'build-cache')
+        removeUnusedEntriesAfterDays = 30
+    }
+}
+
 rootProject.name = "OTP Forwarder"
 include ':app'

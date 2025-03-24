@@ -1,12 +1,6 @@
-<!-- 
-    Main Activity Layout for OTP Forwarder App
-    
-    This layout contains a simple interface with a text input field
-    for the user to enter their email address where OTP codes will be forwarded.
-    
-    The LinearLayout uses a vertical orientation to stack UI elements.
--->
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,47 +9,130 @@
     tools:context=".OTPForwarderApp">
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sender Email Settings"
+        android:text="SMS OTP Email Forwarder"
+        android:textSize="20sp"
         android:textStyle="bold"
-        android:layout_marginBottom="8dp" />
-
-    <EditText
-        android:id="@+id/senderEmailEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter your email address (sender)"
-        android:inputType="textEmailAddress"
-        android:layout_marginBottom="8dp" />
-
-    <EditText
-        android:id="@+id/passwordEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter your email password"
-        android:inputType="textPassword"
         android:layout_marginBottom="16dp" />
 
-    <TextView
+    <!-- Service Status Indicator -->
+    <LinearLayout
+        android:id="@+id/serviceStatusContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Recipient Email"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp" />
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:layout_marginBottom="12dp">
+
+        <ImageView
+            android:id="@+id/serviceStatusIcon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@android:drawable/presence_invisible"
+            android:layout_gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/serviceStatusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Service Inactive"
+            android:textSize="14sp"
+            android:layout_gravity="center_vertical" />
+
+    </LinearLayout>
+
+    <!-- Send to Self Toggle -->
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/sendToSelfSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send emails to myself"
+        android:checked="true"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:id="@+id/emailLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email Address:" />
 
     <EditText
         android:id="@+id/emailEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter recipient email address"
         android:inputType="textEmailAddress"
+        android:hint="Your email address"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Sender Email Section (Initially Hidden) -->
+    <TextView
+        android:id="@+id/senderLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sender Email Address:"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/senderEmailEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:hint="Sender email address"
+        android:visibility="gone"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:id="@+id/passwordLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email Password:" />
+
+    <TextView
+        android:id="@+id/passwordHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="For Gmail, use an App Password from Google Account settings."
+        android:textSize="12sp"
+        android:textStyle="italic" />
+
+    <EditText
+        android:id="@+id/passwordEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:hint="Email password or app password"
         android:layout_marginBottom="16dp" />
 
+    <!-- Simple Save Button -->
     <Button
         android:id="@+id/saveButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save Settings" />
+        android:text="Save Settings"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/statusLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Status:"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/statusTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enter your email settings and save to activate the service."
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/infoTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="This app will automatically forward SMS OTPs to your email. Make sure you've granted SMS permission."
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>

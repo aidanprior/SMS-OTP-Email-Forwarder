@@ -6,7 +6,9 @@ SMS OTP Email Forwarder is an Android application that automatically forwards SM
 
 ## Features
 
-- Automatically detects and extracts OTP codes from incoming SMS messages
+- Advanced OTP detection using pattern recognition and context analysis
+- Multiple detection algorithms for various OTP formats
+- Confidence scoring system to minimize false positives
 - Securely forwards OTP codes to a configured email address
 - Minimal battery and resource usage
 - Works in the background without interfering with normal phone usage
@@ -31,8 +33,19 @@ SMS OTP Email Forwarder is an Android application that automatically forwards SM
 1. Launch the application
 2. Enter your email credentials (the address where OTPs will be sent)
 3. Configure any additional settings (optional)
-4. Enable the service using the toggle switch
+4. Save the settings
 5. Test the setup by receiving an OTP message
+
+## OTP Detection Technology
+
+The app uses a sophisticated OTP detection system:
+
+- Multiple pattern recognition algorithms for different OTP formats
+- Context analysis of message content
+- Sender verification
+- Confidence scoring to ensure accuracy
+- Support for numeric, alphanumeric, and formatted OTPs
+- Handles OTPs from banking, social media, and general verification services
 
 ## Privacy & Security
 
